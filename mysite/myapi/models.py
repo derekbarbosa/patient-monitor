@@ -68,7 +68,7 @@ class Device(models.Model):
     isAssigned = models.BooleanField(default=False)
    
     def __str__(self):
-        return self.deviceSKU + ':' + self.id
+        return self.deviceSKU + ':' + self.uid
 
 class MedHistory(models.Model):
     uid = models.OneToOneField(User, on_delete = models.CASCADE, default= uuid.uuid4)
