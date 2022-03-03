@@ -9,11 +9,14 @@ from django.utils import timezone
 #1xx - device
 import uuid
 
+
 # Create your models here.
 class UserManager(models.Manager):
-    def create_user(self,role):
+
+    def create_user(self, role):
         user = self.create(role=role)
         return user
+
 
 class User(models.Model):
 
@@ -28,12 +31,10 @@ class User(models.Model):
 
     role = models.CharField(max_length=1, choices=ROLES, default='3')
 
-    uid = models.UUIDField(
-        'UID',
-        primary_key = True,
-        default = uuid.uuid4,
-        editable = False
-        )
+    id = models.UUIDField('UID',
+                          primary_key=True,
+                          default=uuid.uuid4,
+                          editable=False)
 
     firstName = models.CharField(max_length=30)
     lastName = models.CharField(max_length=30)
@@ -54,51 +55,54 @@ class User(models.Model):
     def __str__(self):
         return self.firstName + ' ' + self.lastName
 
+
 class Device(models.Model):
-    uid = models.ForeignKey(User, on_delete = models.CASCADE, default= uuid.uuid4)
-    did = models.UUIDField(
-        'DID',
-        primary_key = True,
-        default = uuid.uuid4,
-        editable = False
-    )
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, default=uuid.uuid4)
+    did = models.UUIDField('DID',
+                           primary_key=True,
+                           default=uuid.uuid4,
+                           editable=False)
     deviceSKU = models.CharField(max_length=30)
     modelNum = models.CharField(max_length=30)
     serialNum = models.CharField(max_length=30)
     isAssigned = models.BooleanField(default=False)
-   
+
     def __str__(self):
         return self.deviceSKU + ':' + self.uid
 
+
 class MedHistory(models.Model):
-    uid = models.OneToOneField(User, on_delete = models.CASCADE, default= uuid.uuid4)
+    uid = models.OneToOneField(User,
+                               on_delete=models.CASCADE,
+                               default=uuid.uuid4)
+
 
 class Allergies(models.Model):
-    models.ForeignKey(MedHistory, on_delete=models.CASCADE, default= uuid.uuid4)
+    models.ForeignKey(MedHistory, on_delete=models.CASCADE, default=uuid.uuid4)
     allergy = models.CharField(max_length=30)
     SEVERITIES = (
         ('1', 'MILD'),
         ('2', 'SERIOUS'),
         ('3', 'URGENT'),
     )
-    severity = models.CharField(max_length=1,choices=SEVERITIES)
+    severity = models.CharField(max_length=1, choices=SEVERITIES)
 
     def __str__(self):
-        return self.allergy + ' '+ 'Severity: ' + self.severity
+        return self.allergy + ' ' + 'Severity: ' + self.severity
+
 
 class Medications(models.Model):
     medhistory = models.ForeignKey(MedHistory, on_delete=models.CASCADE)
-    medId = models.UUIDField(
-        'DID',
-        primary_key = True,
-        default = uuid.uuid4,
-        editable = False
-    )
+    medId = models.UUIDField('DID',
+                             primary_key=True,
+                             default=uuid.uuid4,
+                             editable=False)
     isValid = models.BooleanField(default=False)
     prescribedBy = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.medId + ' '+ 'Prescriber: ' + self.prescribedBy
+        return self.medId + ' ' + 'Prescriber: ' + self.prescribedBy
+
 
 class Operation(models.Model):
     models.ForeignKey(MedHistory, on_delete=models.CASCADE)
@@ -115,14 +119,20 @@ class Operation(models.Model):
     def __str__(self):
         return 'Operation Type: ' + self.type + ' ' + 'Performed By: ' + self.performedBy
 
+
 class Measurements(models.Model):
     models.ForeignKey(MedHistory, on_delete=models.CASCADE)
-    uid = models.OneToOneField(User, on_delete = models.CASCADE, default= uuid.uuid4)
-    did = models.ForeignKey(Device, on_delete = models.CASCADE, default= uuid.uuid4)
+    uid = models.OneToOneField(User,
+                               on_delete=models.CASCADE,
+                               default=uuid.uuid4)
+    did = models.ForeignKey(Device,
+                            on_delete=models.CASCADE,
+                            default=uuid.uuid4)
     time = models.DateTimeField(default=timezone.now)
 
+
 class Measurement(models.Model):
-    measurements= models.ForeignKey(Measurements, on_delete=models.CASCADE)
+    measurements = models.ForeignKey(Measurements, on_delete=models.CASCADE)
     height = models.CharField(max_length=30)
     weight = models.CharField(max_length=30)
     BMI = models.CharField(max_length=30)
@@ -130,4 +140,3 @@ class Measurement(models.Model):
     bloodO2 = models.CharField(max_length=30)
     heartRate = models.CharField(max_length=30)
     temperature = models.CharField(max_length=30)
-    
