@@ -77,7 +77,7 @@ class MedHistory(models.Model):
                                default=uuid.uuid4)
 
     def __str__(self):
-        return self.uid
+        return str(self.uid)
 
 
 class Allergies(models.Model):
