@@ -6,6 +6,14 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'device',views.DeviceViewSet)
+router.register(r'medhistory',views.MedHistoryViewSet)
+router.register(r'allergies', views.AllergiesViewSet)
+router.register(r'medications',views.MedicationsViewset)
+router.register(r'operation',views.OperationViewSet)
+router.register(r'measurements',views.MeasurementsViewSet)
+router.register(r'measurement',views.MeasurementViewSet)
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

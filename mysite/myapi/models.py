@@ -76,9 +76,14 @@ class MedHistory(models.Model):
                                on_delete=models.CASCADE,
                                default=uuid.uuid4)
 
+    def __str__(self):
+        return self.uid
+
 
 class Allergies(models.Model):
-    models.ForeignKey(MedHistory, on_delete=models.CASCADE, default=uuid.uuid4)
+    medhistory = models.ForeignKey(MedHistory,
+                                   on_delete=models.CASCADE,
+                                   default=uuid.uuid4)
     allergy = models.CharField(max_length=30)
     SEVERITIES = (
         ('1', 'MILD'),
@@ -92,7 +97,10 @@ class Allergies(models.Model):
 
 
 class Medications(models.Model):
-    medhistory = models.ForeignKey(MedHistory, on_delete=models.CASCADE)
+    medhistory = models.ForeignKey(MedHistory,
+                                   related_name='medications',
+                                   on_delete=models.CASCADE,
+                                   default=uuid.uuid4)
     medId = models.UUIDField('DID',
                              primary_key=True,
                              default=uuid.uuid4,
@@ -105,7 +113,10 @@ class Medications(models.Model):
 
 
 class Operation(models.Model):
-    models.ForeignKey(MedHistory, on_delete=models.CASCADE)
+    medhistory = models.ForeignKey(MedHistory,
+                                   related_name='operations',
+                                   on_delete=models.CASCADE,
+                                   default=uuid.uuid4)
     performedBy = models.ForeignKey(User, on_delete=models.CASCADE)
     OPERATIONS = (
         ('1', 'SURGICAL'),
@@ -121,7 +132,10 @@ class Operation(models.Model):
 
 
 class Measurements(models.Model):
-    models.ForeignKey(MedHistory, on_delete=models.CASCADE)
+    medhistory = models.ForeignKey(MedHistory,
+                                   related_name='measurements',
+                                   on_delete=models.CASCADE,
+                                   default=uuid.uuid4)
     uid = models.OneToOneField(User,
                                on_delete=models.CASCADE,
                                default=uuid.uuid4)
@@ -132,7 +146,10 @@ class Measurements(models.Model):
 
 
 class Measurement(models.Model):
-    measurements = models.ForeignKey(Measurements, on_delete=models.CASCADE)
+    measurements = models.ForeignKey(Measurements,
+                                     related_name='measurement',
+                                     on_delete=models.CASCADE,
+                                     default=uuid.uuid4)
     height = models.CharField(max_length=30)
     weight = models.CharField(max_length=30)
     BMI = models.CharField(max_length=30)
