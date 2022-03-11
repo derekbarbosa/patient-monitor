@@ -1,4 +1,5 @@
 from ast import operator
+from email.policy import default
 from tkinter import CASCADE
 from django.db import models
 from django.utils import timezone
@@ -36,11 +37,11 @@ class User(models.Model):
                           default=uuid.uuid4,
                           editable=False)
 
-    firstName = models.CharField(max_length=30)
-    lastName = models.CharField(max_length=30)
-    birthDate = models.CharField(max_length=10)
-    address = models.CharField(max_length=60)
-    phoneNumber = models.CharField(max_length=10)
+    firstName = models.CharField(max_length=30, default='Johnny')
+    lastName = models.CharField(max_length=30, default='Appleseed')
+    birthDate = models.CharField(max_length=10, default='01/01/01')
+    address = models.CharField(max_length=60, default='1 Main Street')
+    phoneNumber = models.CharField(max_length=10, default='1234567890')
     #photoID = models.ImageField()
     ## Insert "cyclical support": https://stackoverflow.com/questions/8466726/django-circular-model-reference
 
@@ -50,14 +51,18 @@ class User(models.Model):
         ('O', 'Other'),
     )
 
-    sex = models.CharField(max_length=1, choices=SEXES)
+    sex = models.CharField(max_length=1, choices=SEXES, default='O')
 
     def __str__(self):
         return self.firstName + ' ' + self.lastName
 
 
 class Device(models.Model):
-    uid = models.ForeignKey(User, on_delete=models.CASCADE, default=uuid.uuid4)
+    uid = models.ForeignKey(User,
+                            on_delete=models.CASCADE,
+                            related_name="device",
+                            default=None,
+                            null=True)
     did = models.UUIDField('DID',
                            primary_key=True,
                            default=uuid.uuid4,
@@ -68,13 +73,15 @@ class Device(models.Model):
     isAssigned = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.deviceSKU + ':' + self.uid
+        return str(self.deviceSKU + ':' + str(self.uid))
 
 
 class MedHistory(models.Model):
     uid = models.OneToOneField(User,
                                on_delete=models.CASCADE,
-                               default=uuid.uuid4)
+                               related_name="medHistory",
+                               default=None,
+                               null=True)
 
     def __str__(self):
         return str(self.uid)
@@ -83,41 +90,53 @@ class MedHistory(models.Model):
 class Allergies(models.Model):
     medhistory = models.ForeignKey(MedHistory,
                                    on_delete=models.CASCADE,
-                                   default=uuid.uuid4)
-    allergy = models.CharField(max_length=30)
+                                   related_name="allergies",
+                                   default=None,
+                                   null=True)
+    allergy = models.CharField(max_length=30, default="None")
     SEVERITIES = (
         ('1', 'MILD'),
         ('2', 'SERIOUS'),
         ('3', 'URGENT'),
     )
-    severity = models.CharField(max_length=1, choices=SEVERITIES)
+    severity = models.CharField(max_length=1, choices=SEVERITIES, default='1')
 
     def __str__(self):
-        return self.allergy + ' ' + 'Severity: ' + self.severity
+        return str(self.allergy + ' ' + 'Severity: ' + self.severity)
 
 
 class Medications(models.Model):
     medhistory = models.ForeignKey(MedHistory,
                                    related_name='medications',
                                    on_delete=models.CASCADE,
-                                   default=uuid.uuid4)
-    medId = models.UUIDField('DID',
+                                   default=None,
+                                   null=True)
+    medId = models.UUIDField('medID',
                              primary_key=True,
                              default=uuid.uuid4,
-                             editable=False)
+                             editable=True)
     isValid = models.BooleanField(default=False)
-    prescribedBy = models.ForeignKey(User, on_delete=models.CASCADE)
+    prescribedBy = models.ForeignKey(User,
+                                     related_name="prescriber",
+                                     on_delete=models.CASCADE,
+                                     default=None,
+                                     null=True)
 
     def __str__(self):
-        return self.medId + ' ' + 'Prescriber: ' + self.prescribedBy
+        return str(
+            str(self.medId) + ' ' + 'Prescriber: ' + str(self.prescribedBy))
 
 
 class Operation(models.Model):
     medhistory = models.ForeignKey(MedHistory,
                                    related_name='operations',
                                    on_delete=models.CASCADE,
-                                   default=uuid.uuid4)
-    performedBy = models.ForeignKey(User, on_delete=models.CASCADE)
+                                   default=None,
+                                   null=True)
+    performedBy = models.ForeignKey(User,
+                                    on_delete=models.CASCADE,
+                                    default=None,
+                                    null=True)
     OPERATIONS = (
         ('1', 'SURGICAL'),
         ('2', 'PHYSICAL EXAM'),
@@ -125,35 +144,48 @@ class Operation(models.Model):
         ('4', 'THERAPY'),
         ('5', 'REHABILITATION'),
     )
-    type = models.CharField(max_length=1, choices=OPERATIONS)
+    type = models.CharField(max_length=1, choices=OPERATIONS, default="5")
 
     def __str__(self):
-        return 'Operation Type: ' + self.type + ' ' + 'Performed By: ' + self.performedBy
+        return str('Operation Type: ' + self.type + ' ' + 'Performed By: ' +
+                   str(self.performedBy))
 
 
 class Measurements(models.Model):
     medhistory = models.ForeignKey(MedHistory,
                                    related_name='measurements',
                                    on_delete=models.CASCADE,
-                                   default=uuid.uuid4)
+                                   default=None,
+                                   null=True)
     uid = models.OneToOneField(User,
                                on_delete=models.CASCADE,
-                               default=uuid.uuid4)
+                               default=None,
+                               null=True)
     did = models.ForeignKey(Device,
                             on_delete=models.CASCADE,
-                            default=uuid.uuid4)
+                            default=None,
+                            null=True)
     time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return str(
+            str(self.medhistory) + ' ' + str(self.uid) + ' ' + str(self.time))
 
 
 class Measurement(models.Model):
     measurements = models.ForeignKey(Measurements,
                                      related_name='measurement',
                                      on_delete=models.CASCADE,
-                                     default=uuid.uuid4)
-    height = models.CharField(max_length=30)
-    weight = models.CharField(max_length=30)
-    BMI = models.CharField(max_length=30)
-    bloodPressure = models.CharField(max_length=30)
-    bloodO2 = models.CharField(max_length=30)
-    heartRate = models.CharField(max_length=30)
-    temperature = models.CharField(max_length=30)
+                                     default=None,
+                                     null=True)
+    height = models.CharField(max_length=30, default="0cm")
+    weight = models.CharField(max_length=30, default="0kg")
+    BMI = models.CharField(max_length=30, default="0")
+    bloodPressure = models.CharField(max_length=30, default="0")
+    bloodO2 = models.CharField(max_length=30, default="0")
+    heartRate = models.CharField(max_length=30, default="0")
+    temperature = models.CharField(max_length=30, default="0")
+
+    def __str__(self):
+        return str(
+            str(self.measurements) + ' ' + self.height + ' ' + self.weight)
