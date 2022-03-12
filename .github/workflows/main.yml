@@ -40,4 +40,4 @@ jobs:
       - name: Test with Django's Manager
         run: |
           # use django unit tests/python unittest modules to test object creation
-          python3 ./mysite/manage.py test
+          python3 ./mysite/manage.py test myapi -v 3
