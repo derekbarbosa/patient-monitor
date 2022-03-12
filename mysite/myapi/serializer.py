@@ -24,7 +24,7 @@ class MedHistorySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MedHistory
-        fields = ('uid')
+        fields = '__all__'
 
 
 class AllergiesSerializer(serializers.HyperlinkedModelSerializer):
