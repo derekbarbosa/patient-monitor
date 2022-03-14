@@ -5,9 +5,7 @@ I will be using separate branches, and merging them one-by-one on successful uni
 
 ## Active Branches:
 * Main
-
-## Cloud Hosting:
-App hosted at http://54.175.53.184:8000/ on EC2 instance
+* chat_module
 
 ## How to use this API:
 Currently, all views are serialized. Specified endpoints + cleanup will be coming soon.
