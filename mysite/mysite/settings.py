@@ -28,6 +28,7 @@ ALLOWED_HOSTS = [
     '54.175.53.184',
     '44.201.167.159',
     'localhost',
+    '127.0.0.1',
 ]
 
 
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'chat',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +129,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Channels
+ASGI_APPLICATION = 'mysite.asgi.application'

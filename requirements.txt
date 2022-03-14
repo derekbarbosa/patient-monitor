@@ -11,3 +11,4 @@ yapf >= 0.32.0
 flake8 >= 4.0
 urllib3 >= 1.26.8
 requests >= 2.27.1
+channels >= 3.0.0
