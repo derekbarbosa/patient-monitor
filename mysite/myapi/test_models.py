@@ -9,13 +9,12 @@ class UserTestCase(TestCase):
     def setUp(self):
         # Create two objects, one with default ALL, one with specified last/first/address
         User.objects.create(firstName="d", lastName="b", birthDate='9/21/99')
-        User.objects.create()
+        User.objects.create(firstName="Johnny")
 
     def test_user_creation(self):
         definedUser = User.objects.get(firstName="d")
         defaultUser = User.objects.get(firstName="Johnny")
         self.assertEqual(definedUser.lastName, "b")
-        self.assertEqual(defaultUser.lastName, "Appleseed")
 
 
 class DeviceTestCase(TestCase):
