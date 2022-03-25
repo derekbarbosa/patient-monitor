@@ -10,11 +10,11 @@ Tests currently cover:
 
 ## Active Branches:
 * Main
-* endpoints
-* queueing (paused)
 
 ## Inactive Branches
 * chat_module (DELETED, merged into main 3/23/22)
+* endpoints (DELETED, merged into main 3/25/22)
+* queueing (DELETED, merged into main 3/25/22)
 
 ## How to use this API:
 Currently, all views are serialized. Specified endpoints + cleanup will be coming soon.
