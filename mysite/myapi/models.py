@@ -37,11 +37,11 @@ class User(models.Model):
                           default=uuid.uuid4,
                           editable=False)
 
-    firstName = models.CharField(max_length=30, default='Johnny')
-    lastName = models.CharField(max_length=30, default='Appleseed')
-    birthDate = models.CharField(max_length=10, default='01/01/01')
-    address = models.CharField(max_length=60, default='1 Main Street')
-    phoneNumber = models.CharField(max_length=10, default='1234567890')
+    firstName = models.CharField(max_length=30, )
+    lastName = models.CharField(max_length=30, )
+    birthDate = models.CharField(max_length=10, )
+    address = models.CharField(max_length=60, )
+    phoneNumber = models.CharField(max_length=10, )
     #photoID = models.ImageField()
     ## Insert "cyclical support": https://stackoverflow.com/questions/8466726/django-circular-model-reference
 

@@ -21,7 +21,11 @@ Currently, all views are serialized. Specified endpoints + cleanup will be comin
 
 Deploying the app locally will allow you to GET/POST to the endpoints specified in the models.py
 
-Doing a "Get" request will allow you to view the list of users :)
+Doing a "Get" request on /users/ will allow you to view the list of users :), same for all other endpoints (devices, medhistory, allergies, etc).
 
-## How our data will be organized:
+POST requests as of now MUST be sent with HTML form data, otherwise a generic default user will be created :) (or nothing at all). Using only query params will not work!
+
+You CANNOT modify an entry with POST as of right now. Look up your entry with the specific ID, and post using HTML form data :)
+
+## How my data will be organized:
 ![DB Schema](ProposedDBSchema.png)
