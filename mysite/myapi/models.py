@@ -1,5 +1,3 @@
-from ast import operator
-from email.policy import default
 from tkinter import CASCADE
 from django.db import models
 from django.utils import timezone
@@ -10,10 +8,8 @@ from django.utils import timezone
 #1xx - device
 import uuid
 
-
 # Create your models here.
 class UserManager(models.Manager):
-
     def create_user(self, role):
         user = self.create(role=role)
         return user
