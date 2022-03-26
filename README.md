@@ -27,5 +27,8 @@ POST requests as of now MUST be sent with HTML form data, otherwise a generic de
 
 You CANNOT modify an entry with POST as of right now. Look up your entry with the specific ID, and post using HTML form data :)
 
+To access the Chat Module, simply visit the api root and append /chat/.
+If in localhost --> localhost:8000/chat will get you to chat module.
+
 ## How my data will be organized:
 ![DB Schema](ProposedDBSchema.png)
